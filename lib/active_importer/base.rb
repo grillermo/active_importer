@@ -175,6 +175,7 @@ module ActiveImporter
       @book = Roo::Spreadsheet.open(file, options)
       load_sheet
       load_header
+      fill_missing_columns
 
       @data_row_indices = ((@header_index+1)..@book.last_row)
       @row_count = @data_row_indices.count
@@ -275,6 +276,19 @@ module ActiveImporter
         return index if required_column_keys.all? { |item| row.include?(item) }
       end
       return nil
+    end
+
+    def fill_missing_columns
+      self.model_class.column_names.each do |column_name|
+        next if column_name == 'id' || columns.has_key?(column_name)
+        if header.include? column_name
+          columns[column_name] = {
+            field_name: column_name,
+            transform: nil,
+            options: nil
+          }
+        end
+      end
     end
 
     def load_header
