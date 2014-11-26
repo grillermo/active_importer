@@ -280,7 +280,7 @@ module ActiveImporter
 
     def fill_missing_columns
       self.model_class.column_names.each do |column_name|
-        next if column_name == 'id' || columns.has_key?(column_name)
+        next if columns.has_key?(column_name)
         if header.include? column_name
           columns[column_name] = {
             field_name: column_name,
